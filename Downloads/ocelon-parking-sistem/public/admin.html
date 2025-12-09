@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - Ocelon</title>
+  <link rel="icon" href="/images/Logo.jpg" type="image/jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/responsive-fixes.css">
+  <link rel="stylesheet" href="css/admin-crud.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+      <img src="images/Logo.jpg" alt="Ocelon Logo" class="sidebar-logo">
+      <h1 class="sidebar-title">Ocelon Admin</h1>
+    </div>
+    <div class="nav-section-title">Principal</div>
+    <a class="admin-nav-link active" data-section="dashboard"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+    <div class="nav-section-title">Gestión</div>
+    <a class="admin-nav-link" data-section="users"><i class="fas fa-users"></i><span>Usuarios</span></a>
+    <a class="admin-nav-link" data-section="parking"><i class="fas fa-parking"></i><span>Estacionamientos</span></a>
+    <a class="admin-nav-link" data-section="sessions"><i class="fas fa-car"></i><span>Sesiones Activas</span></a>
+    <div class="nav-section-title">Financiero</div>
+    <a class="admin-nav-link" data-section="reports"><i class="fas fa-file-invoice-dollar"></i><span>Reportes</span></a>
+    <div class="nav-section-title">Sistema</div>
+    <a class="admin-nav-link" data-section="tickets"><i class="fas fa-headset"></i><span>Soporte</span></a>
+    <a class="admin-nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="admin-main">
+    <!-- Top Bar -->
+    <div class="admin-topbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-light" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        <h2 class="page-title" id="pageTitle">Dashboard</h2>
+      </div>
+      <div class="admin-user-info">
+        <div class="admin-avatar" id="userAvatar">A</div>
+        <div>
+          <div class="fw-bold" id="userName">Administrador</div>
+          <small class="text-muted" id="userRole">Admin</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="content-section active" id="dashboardSection">
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-primary-light">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-label">Usuarios Activos</div>
+            <div class="stat-value" id="totalUsers">0</div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-secondary-light">
+              <i class="fas fa-parking"></i>
+            </div>
+            <div class="stat-label">Estacionamientos</div>
+            <div class="stat-value" id="totalParkingLots">0</div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-warning-light">
+              <i class="fas fa-car"></i>
+            </div>
+            <div class="stat-label">Sesiones Hoy</div>
+            <div class="stat-value" id="todaySessions">0</div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-info-light">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-label">Ingresos del Mes</div>
+            <div class="stat-value" id="monthlyRevenue">$0</div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-danger-light"><i class="fas fa-clock"></i></div>
+            <div class="stat-label">Sesiones Activas</div>
+            <div class="stat-value" id="activeSessions">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráficas del dashboard -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-6">
+          <div class="card">
+            <div class="card-header">Ingresos por Estacionamiento</div>
+            <div class="card-body"><canvas id="revenueChart"></canvas></div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="card">
+            <div class="card-header">Sesiones por Día</div>
+            <div class="card-body"><canvas id="sessionsChart"></canvas></div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="card">
+            <div class="card-header">Métodos de Pago</div>
+            <div class="card-body"><canvas id="paymentMethodsChart"></canvas></div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="card">
+            <div class="card-header">Planes Más Usados</div>
+            <div class="card-body"><canvas id="plansChart"></canvas></div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="card">
+            <div class="card-header">Tickets por Estado</div>
+            <div class="card-body"><canvas id="ticketsChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Planes Comprados del Mes -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Planes Comprados Este Mes</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover" id="plansTableMonth">
+              <thead class="table-light">
+                <tr>
+                  <th>Usuario</th>
+                  <th>Plan</th>
+                  <th>Ingreso</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody id="plansTableMonthBody">
+                <tr><td colspan="4" class="text-center text-muted">Cargando datos...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- USUARIOS CRUD -->
+<div class="content-section" id="usersSection">
+  <div class="admin-crud-card">
+    <div class="admin-crud-header">
+      <h3 class="admin-crud-title">Gestión de Usuarios</h3>
+      <div class="d-flex gap-2">
+        <button class="admin-crud-btn" onclick="openCreateUserModal()">
+          <i class="fas fa-plus me-2"></i>Nuevo Usuario
+        </button>
+        <button class="admin-crud-export-btn" onclick="exportTableToExcel('adminUsersTable', 'usuarios')">
+          <i class="fas fa-file-excel"></i> Excel
+        </button>
+        <button class="admin-crud-export-btn" onclick="exportTableToPDF('adminUsersTable', 'usuarios')">
+          <i class="fas fa-file-pdf"></i> PDF
+        </button>
+      </div>
+    </div>
+    
+    <!-- NUEVO: Barra de búsqueda y filtros -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="text" class="admin-crud-input form-control" id="searchUsers" placeholder="Buscar por nombre o email...">
+      </div>
+      <div class="col-md-3">
+        <select class="admin-crud-input form-control" id="filterUserRole">
+          <option value="">Todos los roles</option>
+          <option value="conductor">Conductor</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select class="admin-crud-input form-control" id="filterUserStatus">
+          <option value="">Todos los estados</option>
+          <option value="activo">Activo</option>
+          <option value="suspendido">Suspendido</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="admin-crud-table table" id="adminUsersTable">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Plan</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Registro</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="adminUsersTableBody">
+          <tr><td colspan="7" class="text-center">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ESTACIONAMIENTOS CRUD -->
+<div class="content-section" id="parkingSection">
+  <div class="admin-crud-card">
+    <div class="admin-crud-header">
+      <h3 class="admin-crud-title">Gestión de Estacionamientos</h3>
+      <div class="d-flex gap-2">
+        <button class="admin-crud-btn" onclick="openCreateParkingModal()">
+          <i class="fas fa-plus me-2"></i>Nuevo Estacionamiento
+        </button>
+        <button class="admin-crud-export-btn" onclick="exportTableToExcel('adminParkingTable', 'estacionamientos')">
+          <i class="fas fa-file-excel"></i> Excel
+        </button>
+        <button class="admin-crud-export-btn" onclick="exportTableToPDF('adminParkingTable', 'estacionamientos')">
+          <i class="fas fa-file-pdf"></i> PDF
+        </button>
+      </div>
+    </div>
+    
+    <!-- NUEVO: Barra de búsqueda y filtros -->
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <input type="text" class="admin-crud-input form-control" id="searchParking" placeholder="Buscar por nombre o ubicación...">
+      </div>
+      <div class="col-md-4">
+        <select class="admin-crud-input form-control" id="filterParkingStatus">
+          <option value="">Todos los estados</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="admin-crud-table table" id="adminParkingTable">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Capacidad</th>
+            <th>Ocupación</th>
+            <th>Tarifa/hora</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="adminParkingTableBody">
+          <tr><td colspan="7" class="text-center">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- SESIONES ACTIVAS CRUD -->
+<div class="content-section" id="sessionsSection">
+  <div class="admin-crud-card">
+    <div class="admin-crud-header">
+      <h3 class="admin-crud-title">Gestión de Sesiones Activas</h3>
+      <button class="admin-crud-btn" onclick="loadActiveSessionsCRUD()">
+        <i class="fas fa-sync-alt me-2"></i> Recargar
+      </button>
+    </div>
+    
+    <!-- NUEVO: Barra de búsqueda -->
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <input type="text" class="admin-crud-input form-control" id="searchSessions" placeholder="Buscar por placas, usuario o estacionamiento...">
+      </div>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="admin-crud-table table" id="adminSessionsTable">
+        <thead>
+          <tr>
+            <th>Placas</th>
+            <th>Usuario</th>
+            <th>Estacionamiento</th>
+            <th>Entrada</th>
+            <th>Duración</th>
+            <th>Costo Est.</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="adminSessionsTableBody">
+          <tr><td colspan="8" class="text-center">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+    <!-- REPORTES EXPORTABLES -->
+    <div class="content-section" id="reportsSection">
+      <div class="row g-3">
+        <div class="col-12 col-lg-4">
+          <div class="admin-crud-card">
+            <h5 class="admin-crud-title mb-4">Generar Reporte de Ingresos</h5>
+            <form id="reportForm">
+              <div class="mb-3">
+                <label class="form-label">Fecha Inicio</label>
+                <input type="date" class="admin-crud-input form-control" id="reportStartDate" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Fecha Fin</label>
+                <input type="date" class="admin-crud-input form-control" id="reportEndDate" required>
+              </div>
+              <button type="submit" class="admin-crud-btn w-100">
+                <i class="fas fa-chart-bar me-2"></i>Generar Reporte
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="col-12 col-lg-8">
+          <div id="adminReportResults">
+            <div class="text-center py-5 text-muted">
+              <i class="fas fa-chart-pie fa-3x mb-3"></i>
+              <p>Selecciona un rango de fechas y genera un reporte</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--TICKETS DE SOPORTE-->
+<div class="content-section" id="ticketsSection">
+  <!-- Stats Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-secondary-light">
+          <i class="fas fa-ticket-alt"></i>
+        </div>
+        <div class="stat-label">Total Tickets</div>
+        <div class="stat-value" id="totalTickets">0</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-danger-light">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div class="stat-label">Abiertos</div>
+        <div class="stat-value" id="openTickets">0</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-warning-light">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-label">En Proceso</div>
+        <div class="stat-value" id="processingTickets">0</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-icon bg-primary-light">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-label">Resueltos</div>
+        <div class="stat-value" id="resolvedTickets">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary">
+              <i class="fas fa-search text-muted"></i>
+            </span>
+            <input type="text" class="form-control" id="searchTickets" placeholder="Buscar por ticket, usuario o asunto...">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="filterTicketStatus">
+            <option value="">Todos los estados</option>
+            <option value="abierto">Abiertos</option>
+            <option value="en_proceso">En Proceso</option>
+            <option value="resuelto">Resueltos</option>
+            <option value="cerrado">Cerrados</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="filterTicketPriority">
+            <option value="">Todas las prioridades</option>
+            <option value="alta">Alta</option>
+            <option value="media">Media</option>
+            <option value="baja">Baja</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid de Tickets -->
+  <div class="row g-4">
+    <!-- Lista de Tickets -->
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="fas fa-list me-2"></i>Lista de Tickets</h5>
+          <button class="btn btn-sm btn-primary" onclick="loadAdminTickets()">
+            <i class="fas fa-sync-alt me-1"></i> Actualizar
+          </button>
+        </div>
+        <div class="card-body p-0">
+          <div id="ticketsList" style="max-height: 600px; overflow-y: auto;">
+            <!-- Los tickets se cargarán aquí -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalle del Ticket -->
+    <div class="col-lg-6">
+      <div class="card" id="ticketDetail" style="position: sticky; top: 20px;">
+        <div class="card-body text-center py-5" id="noTicketSelected">
+          <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
+          <h5 class="text-muted">Selecciona un ticket</h5>
+          <p class="text-muted small">Elige un ticket de la lista para ver los detalles y responder</p>
+        </div>
+        <div id="ticketDetailContent" style="display: none;">
+          <!-- El contenido del ticket se cargará aquí -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- ========== MODALES ========== -->
+
+  <!-- Modal Crear Usuario -->
+  <div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content admin-crud-modal">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Crear Nuevo Usuario</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nombre Completo</label>
+            <input class="admin-crud-input form-control" id="createUserName" placeholder="Juan Pérez">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Correo Electrónico</label>
+            <input type="email" class="admin-crud-input form-control" id="createUserEmail" placeholder="juan@ejemplo.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" class="admin-crud-input form-control" id="createUserPassword" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Rol</label>
+            <select class="admin-crud-input form-control" id="createUserRole">
+              <option value="conductor">Conductor</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="admin-crud-btn" onclick="createUser()">
+            <i class="fas fa-save me-2"></i>Crear Usuario
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Usuario -->
+  <div class="modal fade" id="editUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content admin-crud-modal">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Editar Usuario</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nombre Completo</label>
+            <input class="admin-crud-input form-control" id="editUserName">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="admin-crud-input form-control" id="editUserEmail" disabled>
+            <small class="text-muted">El email no puede ser modificado</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Rol</label>
+            <select class="admin-crud-input form-control" id="editUserRole">
+              <option value="conductor">Conductor</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="admin-crud-btn" onclick="saveUserEdit()">
+            <i class="fas fa-save me-2"></i>Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Campo oculto para guardar el ID -->
+    <input type="hidden" id="editUserId">
+
+  <!-- Modal Crear Estacionamiento -->
+  <div class="modal fade" id="createParkingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content admin-crud-modal">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-parking me-2"></i>Crear Nuevo Estacionamiento</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input class="admin-crud-input form-control" id="createParkingName" placeholder="Estacionamiento Central">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ubicación</label>
+            <input class="admin-crud-input form-control" id="createParkingLocation" placeholder="Av. Principal #123">
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Capacidad Total</label>
+              <input type="number" class="admin-crud-input form-control" id="createParkingCapacity" placeholder="100">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Tarifa por Hora ($)</label>
+              <input type="number" step="0.01" class="admin-crud-input form-control" id="createParkingRate" placeholder="20.00">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Horario</label>
+            <input class="admin-crud-input form-control" id="createParkingSchedule" value="24/7">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="admin-crud-btn" onclick="createParking()">
+            <i class="fas fa-save me-2"></i>Crear Estacionamiento
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Estacionamiento -->
+  <div class="modal fade" id="editParkingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content admin-crud-modal">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Estacionamiento</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input class="admin-crud-input form-control" id="editParkingName">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ubicación</label>
+            <input class="admin-crud-input form-control" id="editParkingLocation">
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Capacidad Total</label>
+              <input type="number" class="admin-crud-input form-control" id="editParkingCapacity">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Tarifa por Hora ($)</label>
+              <input type="number" step="0.01" class="admin-crud-input form-control" id="editParkingRate">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Horario</label>
+            <input class="admin-crud-input form-control" id="editParkingSchedule">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="admin-crud-btn" onclick="saveParkingEdit()">
+            <i class="fas fa-save me-2"></i>Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Campo oculto para guardar el ID -->
+    <input type="hidden" id="editParkingId">
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/admin-crud.js"></script>
+  <script src="js/admin-export.js"></script>
+  <script src="js/admin-sessions-crud.js"></script>
+  <script src="js/admin-reports-crud.js"></script>
+  <script src="js/admin-modals.js"></script>
+  <script src="js/admin-search.js"></script>
+</body>
+</html>

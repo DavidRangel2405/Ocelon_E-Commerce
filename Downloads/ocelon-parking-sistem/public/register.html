@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Regístrate en Ocelon - Sistema inteligente de estacionamiento">
+    <title>Registro - Ocelon</title>
+    <link rel="icon" href="/images/Logo.jpg" type="image/jpg">
+    
+    <!-- Preconnect para optimizar carga -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive-fixes.css">
+    
+    <!-- Toast Notifications -->
+    <link rel="stylesheet" href="css/toast-notifications.css">
+</head>
+<body>
+    <!-- Botón volver al inicio -->
+    <div class="back-home">
+        <a href="/">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver al Inicio</span>
+        </a>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="login-container">
+        <div class="login-card animate__animated animate__fadeInUp">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="login-logo">
+                    <img src="images/Logo.jpg" alt="Ocelon Logo">
+                </div>
+                <h1 class="login-title">Crear tu cuenta</h1>
+                <p class="login-subtitle">Únete a Ocelon y gestiona tus estacionamientos de forma inteligente</p>
+            </div>
+
+            <!-- Mensajes de error/éxito -->
+            <div class="error-message" id="errorMessage" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText"></span>
+            </div>
+            
+            <div class="success-message" id="successMessage" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+                <span id="successText"></span>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <form id="registerForm" novalidate>
+                <!-- Nombre completo -->
+                <div class="input-group-custom">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="nombre" 
+                        placeholder="Nombre completo"
+                        required
+                        autocomplete="name"
+                        aria-label="Nombre completo"
+                    >
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group-custom">
+                    <input 
+                        type="email" 
+                        class="form-control" 
+                        id="email" 
+                        placeholder="correo@ejemplo.com"
+                        required
+                        autocomplete="email"
+                        aria-label="Correo electrónico"
+                    >
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+
+                <!-- Teléfono (Opcional) -->
+                <div class="input-group-custom">
+                    <input 
+                        type="tel" 
+                        class="form-control" 
+                        id="telefono" 
+                        placeholder="Teléfono (opcional)"
+                        autocomplete="tel"
+                        aria-label="Teléfono"
+                        maxlength="10"
+                    >
+                    <i class="fas fa-phone input-icon"></i>
+                </div>
+
+                <!-- RFC (Opcional) -->
+                <div class="input-group-custom">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="rfc" 
+                        placeholder="RFC (opcional)"
+                        autocomplete="off"
+                        aria-label="RFC"
+                        maxlength="13"
+                    >
+                    <i class="fas fa-id-card input-icon"></i>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="input-group-custom">
+                    <input 
+                        type="password" 
+                        class="form-control" 
+                        id="password" 
+                        placeholder="Contraseña (mínimo 8 caracteres)"
+                        required
+                        autocomplete="new-password"
+                        aria-label="Contraseña"
+                    >
+                    <i class="fas fa-lock input-icon"></i>
+                    <button type="button" class="password-toggle" id="togglePassword" aria-label="Mostrar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <!-- Confirmar contraseña -->
+                <div class="input-group-custom">
+                    <input 
+                        type="password" 
+                        class="form-control" 
+                        id="confirmPassword" 
+                        placeholder="Confirmar contraseña"
+                        required
+                        autocomplete="new-password"
+                        aria-label="Confirmar contraseña"
+                    >
+                    <i class="fas fa-lock input-icon"></i>
+                    <button type="button" class="password-toggle" id="toggleConfirmPassword" aria-label="Mostrar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <!-- Términos y condiciones -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check-custom">
+                        <input class="form-check-input" type="checkbox" id="termsCheckbox" required>
+                        <label class="form-check-label" for="termsCheckbox">
+                            Acepto los 
+                            <a href="#" class="forgot-password" data-bs-toggle="modal" data-bs-target="#termsModal">
+                                Términos y Condiciones
+                            </a>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Botón de Registro -->
+                <button type="submit" class="btn btn-ocelon w-100 mb-3" id="registerBtn">
+                    <i class="fas fa-user-plus me-2"></i>
+                    <span>Crear Cuenta</span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>O continúa con</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button type="button" class="btn-social" id="googleRegister">
+                    <i class="fab fa-google"></i>
+                    <span>Google</span>
+                </button>
+                <button type="button" class="btn-social" id="appleRegister">
+                    <i class="fab fa-apple"></i>
+                    <span>Apple</span>
+                </button>
+            </div>
+
+            <!-- Link a Login -->
+            <div class="register-link">
+                ¿Ya tienes una cuenta? <a href="login.html">Inicia Sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Términos y Condiciones -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">
+                        <i class="fas fa-file-contract text-primary me-2"></i>
+                        Términos y Condiciones
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>1. Aceptación de Términos</h6>
+                    <p>Al usar Ocelon, aceptas estos términos y condiciones en su totalidad.</p>
+                    
+                    <h6>2. Uso del Servicio</h6>
+                    <p>Ocelon es un sistema de gestión de estacionamientos. Te comprometes a usar el servicio de manera legal y apropiada.</p>
+                    
+                    <h6>3. Cuenta de Usuario</h6>
+                    <p>Eres responsable de mantener la confidencialidad de tu contraseña y cuenta.</p>
+                    
+                    <h6>4. Pagos</h6>
+                    <p>Los pagos se procesan de forma segura. Solo pagas por el tiempo de estacionamiento usado.</p>
+                    
+                    <h6>5. Privacidad</h6>
+                    <p>Tus datos se manejan según nuestra Política de Privacidad.</p>
+                    
+                    <h6>6. Modificaciones</h6>
+                    <p>Nos reservamos el derecho de modificar estos términos en cualquier momento.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-ocelon" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-ocelon" id="acceptTermsBtn">
+                        <i class="fas fa-check me-2"></i>
+                        Aceptar Términos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container top-right" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Toast Notifications (DEBE IR ANTES de register.js) -->
+    <script src="js/toast-notifications.js"></script>
+    
+    <!-- Register Script -->
+    <script src="js/register.js"></script>
+</body>
+</html>

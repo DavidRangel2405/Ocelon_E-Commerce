@@ -1,0 +1,177 @@
+/* ================================
+   OCELON ADMIN - CRUD STYLES
+   ================================ */
+
+:root {
+  --admin-bg: #0f172a;
+  --admin-glass: rgba(30, 41, 59, 0.7);
+  --admin-border: rgba(255, 255, 255, 0.1);
+  --admin-primary: #10b981;
+  --admin-primary-glow: rgba(16, 185, 129, 0.3);
+  --admin-radius: 1rem;
+  --admin-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --sidebar-width: 280px;
+  --admin-dark: #1f2937;
+}
+
+.admin-crud-container {
+  background: var(--admin-bg);
+  color: #e2e8f0;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-crud-card {
+  background: var(--admin-glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  box-shadow: var(--admin-shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.admin-crud-card:hover {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 20px var(--admin-primary-glow);
+}
+
+.admin-crud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.admin-crud-title {
+font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--color-primary) 0%,#fff 100% );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.admin-crud-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-crud-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+}
+
+.admin-crud-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+.admin-crud-table thead th {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--admin-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem;
+  border: none;
+}
+
+.admin-crud-table tbody tr {
+  background: var(--admin-glass);
+  transition: all 0.2s ease;
+}
+
+.admin-crud-table tbody tr:hover {
+  background: rgba(16, 185, 129, 0.05);
+  transform: scale(1.01);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.admin-crud-modal {
+  background: var(--admin-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.admin-crud-modal .modal-header {
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-crud-modal .modal-footer {
+  border-top: 1px solid var(--admin-border);
+}
+
+.admin-crud-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--admin-border);
+  color: #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.admin-crud-input:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px var(--admin-primary-glow);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-crud-badge {
+  padding: 0.375rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-crud-badge.success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid #10b981;
+}
+
+.admin-crud-badge.danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid #ef4444;
+}
+
+.admin-crud-export-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-crud-export-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--admin-border);
+  color: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-crud-export-btn:hover {
+  background: var(--admin-primary);
+  color: white;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 10px var(--admin-primary-glow);
+}

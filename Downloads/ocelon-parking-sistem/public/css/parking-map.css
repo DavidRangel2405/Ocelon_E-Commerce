@@ -1,0 +1,1052 @@
+/* ========================================
+   OCELON - Parking Map Styles (Mejorado)
+   Diseño profesional, moderno y responsivo
+   ======================================== */
+
+/* ========================================
+   Variables CSS
+   ======================================== */
+:root {
+    --oc-primary: #10b981;
+    --oc-primary-dark: #059669;
+    --oc-secondary: #6366f1;
+    --oc-warning: #f59e0b;
+    --oc-danger: #ef4444;
+    --oc-info: #3b82f6;
+    --oc-dark: #0f172a;
+    --oc-dark-light: #1e293b;
+    --oc-gray: #64748b;
+    --oc-gray-light: #94a3b8;
+    --oc-border: #e2e8f0;
+    --oc-shadow: rgba(15, 23, 42, 0.1);
+    --oc-shadow-lg: rgba(15, 23, 42, 0.15);
+    --oc-radius: 12px;
+    --oc-radius-sm: 8px;
+    --oc-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   Contenedor Principal del Mapa
+   ======================================== */
+.oc-map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 580px;
+    border-radius: var(--oc-radius);
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 20px 60px var(--oc-shadow-lg);
+    transition: var(--oc-transition);
+}
+
+.oc-map-wrapper:hover {
+    box-shadow: 0 25px 80px rgba(15, 23, 42, 0.2);
+}
+
+.oc-map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* ========================================
+   Controles del Mapa
+   ======================================== */
+.oc-map-controls {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 340px;
+    max-width: calc(100vw - 32px);
+    z-index: 9999;
+    background: #0f172a;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 16px;
+    border-radius: var(--oc-radius);
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ========================================
+   Barra de Búsqueda
+   ======================================== */
+.oc-search {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    position: relative;
+}
+
+.oc-search input {
+    flex: 1;
+    padding: 12px 16px;
+    padding-right: 40px;
+    border-radius: var(--oc-radius-sm);
+    border: 2px solid var(--oc-border);
+    outline: none;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    background: #ffffff;
+    color: var(--oc-dark);
+    transition: var(--oc-transition);
+}
+
+.oc-search input::placeholder {
+    color: var(--oc-gray-light);
+}
+
+.oc-search input:focus {
+    border-color: var(--oc-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+#mapSearchClear {
+    position: absolute;
+    right: 8px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 8px;
+    color: var(--oc-gray);
+    transition: var(--oc-transition);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#mapSearchClear:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--oc-danger);
+    transform: rotate(90deg);
+}
+
+/* ========================================
+   Botones de Acción
+   ======================================== */
+.oc-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.oc-actions button {
+    flex: 1;
+    background: #10b981;
+    border: 2px solid var(--oc-primary-dark);
+    padding: 0.75rem;
+    border-radius: var(--oc-radius-sm);
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: var(--oc-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    color: white;
+}
+
+.oc-actions button:hover {
+    background: var(--oc-primary);
+    border-color: var(--oc-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.oc-actions button i {
+    font-size: 1.1rem;
+    transition: var(--oc-transition);
+}
+
+.oc-actions button:hover i {
+    color: white;
+}
+
+/* ========================================
+   Filtros
+   ======================================== */
+.oc-filters {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--oc-border);
+    flex-wrap: wrap;
+}
+
+.oc-filters label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: transparent;
+    padding: 6px 10px;
+    border-radius: var(--oc-radius-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: white;
+    transition: var(--oc-transition);
+    user-select: none;
+    font-weight: 500;
+}
+
+.oc-filters label:hover {
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.oc-filters input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--oc-primary);
+}
+
+/* ========================================
+   Panel de Lista
+   ======================================== */
+.oc-parking-list {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    z-index: 9998;
+    width: 340px;
+    max-width: calc(100vw - 32px);
+    max-height: 500px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--oc-radius);
+    padding: 12px;
+    display: none;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.oc-parking-list.active {
+    display: block;
+}
+
+        .parking-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .parking-list-header h5 {
+            margin: 0;
+            color: var(--oc-dark);
+            font-weight: 600;
+        }
+
+/* Scrollbar personalizado */
+.oc-parking-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.oc-parking-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.oc-parking-list::-webkit-scrollbar-thumb {
+    background: var(--oc-gray-light);
+    border-radius: 10px;
+}
+
+.oc-parking-list::-webkit-scrollbar-thumb:hover {
+    background: var(--oc-gray);
+}
+
+/* ========================================
+   Items de Lista
+   ======================================== */
+.oc-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    border-radius: var(--oc-radius-sm);
+    cursor: pointer;
+    border-bottom: 1px solid var(--oc-border);
+    transition: var(--oc-transition);
+    background: white;
+    margin-bottom: 8px;
+}
+
+.oc-list-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.oc-list-item:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.oc-list-main {
+    flex: 1;
+}
+
+.oc-list-title {
+    font-weight: 600;
+    color: var(--oc-dark);
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.oc-list-sub {
+    font-size: 0.8rem;
+    color: var(--oc-gray);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.oc-list-stats {
+    text-align: right;
+    min-width: 80px;
+}
+
+.oc-list-avail {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--oc-primary);
+    line-height: 1;
+}
+
+.oc-list-rate {
+    font-size: 0.75rem;
+    color: var(--oc-gray);
+    margin-top: 2px;
+}
+
+/* ========================================
+   Marcadores del Mapa
+   ======================================== */
+.oc-divicon .oc-marker {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+    animation: oc-pulse 2s infinite;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: var(--oc-transition);
+    position: relative;
+}
+
+.oc-divicon .oc-marker::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.2;
+    animation: oc-ripple 2s infinite;
+}
+
+.oc-divicon .oc-marker:hover {
+    transform: scale(1.15);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.35);
+}
+
+.oc-divicon .oc-marker.available {
+    background: linear-gradient(135deg, var(--oc-primary) 0%, var(--oc-primary-dark) 100%);
+}
+
+.oc-divicon .oc-marker.busy {
+    background: linear-gradient(135deg, var(--oc-warning) 0%, #f97316 100%);
+}
+
+.oc-divicon .oc-marker.full {
+    background: linear-gradient(135deg, var(--oc-danger) 0%, #dc2626 100%);
+    animation-duration: 1.2s;
+}
+
+/* Animaciones */
+@keyframes oc-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.95;
+    }
+    50% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+}
+
+@keyframes oc-ripple {
+    0% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   Popup Card
+   ======================================== */
+.leaflet-popup-content-wrapper {
+    border-radius: var(--oc-radius);
+    padding: 0;
+    box-shadow: 0 12px 48px rgba(15, 23, 42, 0.2);
+    border: 1px solid var(--oc-border);
+    overflow: hidden;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.oc-popup .oc-popup-card {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    min-width: 280px;
+}
+
+.oc-popup-header {
+    background: linear-gradient(135deg, var(--oc-primary) 0%, var(--oc-primary-dark) 100%);
+    padding: 16px;
+    color: white;
+}
+
+.oc-popup-header h4 {
+    margin: 0 0 6px 0;
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 700;
+}
+
+.oc-popup-sub {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.oc-popup-sub i {
+    font-size: 0.75rem;
+}
+
+.oc-popup-body {
+    padding: 16px;
+    font-size: 0.9rem;
+    color: var(--oc-dark);
+    background: white;
+}
+
+.oc-popup-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--oc-border);
+}
+
+.oc-popup-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.oc-popup-row strong {
+    color: var(--oc-gray);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.oc-popup-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-top: 1px solid var(--oc-border);
+}
+
+/* Botones del Popup */
+.oc-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: var(--oc-radius-sm);
+    cursor: pointer;
+    border: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: var(--oc-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.oc-btn-outline {
+    background: white;
+    border: 2px solid var(--oc-border);
+    color: var(--oc-dark);
+}
+
+.oc-btn-outline:hover {
+    background: var(--oc-dark);
+    border-color: var(--oc-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+.oc-btn-primary {
+    background: linear-gradient(135deg, var(--oc-primary) 0%, var(--oc-primary-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.oc-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* ========================================
+   Marcador de Usuario
+   ======================================== */
+.oc-user-marker {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--oc-info) 0%, #2563eb 100%);
+    border: 4px solid white;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    animation: userPulse 2s infinite;
+    position: relative;
+}
+
+.oc-user-marker::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: var(--oc-info);
+    opacity: 0.3;
+    animation: oc-ripple 2s infinite;
+}
+
+@keyframes userPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* ========================================
+   Loading
+   ======================================== */
+.oc-map-loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99999;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--oc-dark);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 12px 20px;
+    border-radius: var(--oc-radius);
+    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.15);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.oc-map-loading i {
+    color: var(--oc-primary);
+    font-size: 1.25rem;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+/* Tablets */
+@media (max-width: 992px) {
+    .oc-map-wrapper {
+        height: 500px;
+    }
+    
+    .oc-map-controls,
+    .oc-parking-list {
+        width: 300px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .oc-map-wrapper {
+        height: 450px;
+        border-radius: 8px;
+    }
+    
+    .oc-map-controls {
+        top: 12px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+        padding: 12px;
+    }
+    
+    .oc-parking-list {
+        left: 12px;
+        right: 12px;
+        top: auto;
+        bottom: 12px;
+        width: auto;
+        max-width: none;
+        max-height: 300px;
+    }
+    
+    .oc-actions {
+        flex-wrap: wrap;
+    }
+    
+    .oc-actions button {
+        flex: 1 1 calc(50% - 4px);
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+    
+    .oc-filters {
+        gap: 8px;
+    }
+    
+    .oc-filters label {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+    
+    .oc-list-item {
+        padding: 10px;
+    }
+    
+    .oc-list-title {
+        font-size: 0.875rem;
+    }
+    
+    .oc-list-sub {
+        font-size: 0.75rem;
+    }
+    
+    .oc-popup .oc-popup-card {
+        min-width: 240px;
+    }
+    
+    .oc-popup-actions {
+        flex-direction: column;
+    }
+    
+    .oc-divicon .oc-marker {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .oc-map-wrapper {
+        height: 400px;
+    }
+    
+    .oc-search input {
+        font-size: 0.875rem;
+        padding: 10px 14px;
+    }
+    
+    .oc-map-controls {
+        padding: 10px;
+    }
+    
+    .oc-actions button {
+        flex: 1 1 100%;
+    }
+    
+    .oc-list-avail {
+        font-size: 1.1rem;
+    }
+}
+
+/* ========================================
+   Mejoras de Accesibilidad
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus visible para accesibilidad */
+.oc-search input:focus-visible,
+.oc-actions button:focus-visible,
+.oc-btn:focus-visible {
+    outline: 3px solid var(--oc-primary);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   Utilidades Adicionales
+   ======================================== */
+.oc-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.oc-badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--oc-primary);
+}
+
+.oc-badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--oc-warning);
+}
+
+.oc-badge-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--oc-danger);
+}
+
+/* Tooltip custom */
+.oc-tooltip {
+    position: absolute;
+    background: var(--oc-dark);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+}
+
+
+        .custom-div-icon {
+            background: none;
+            border: none;
+        }
+        
+        .custom-marker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .custom-marker:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .custom-marker.pulsing {
+            animation: pulse 2s infinite;
+        }
+        
+        .custom-marker i {
+            font-size: 16px;
+        }
+        
+        .marker-info {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(5, 150, 105, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+        }
+        
+        .parking-popup {
+            font-family: 'Inter', sans-serif;
+            min-width: 280px;
+            background: #0f172a;
+        }
+        
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .popup-header h6 {
+            margin: 1;
+            color: white;
+            font-weight: 600;
+            flex: 1;
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+            margin-left: 1rem;
+        }
+        
+        .status-badge {
+            color: white;
+            margin-top: 1rem;
+            margin-right: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .popup-body {
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .popup-body .address {
+            color: #00aa63;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        small {
+        font-size: 1em;
+        color: white;
+        }   
+        
+        .parking-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #475569;
+        }
+        
+        .detail-item i {
+            width: 16px;
+            color: #00aa63;
+        }
+        
+        .amenidades {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .oc-filters-title {
+            padding-top: 1rem;
+        }
+        
+        .popup-actions {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn-park {
+            background: #01994d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-park:hover {
+            background: white;
+            color:#01994d;
+            transform: translateY(-1px);
+        }
+        
+        .close-list {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        
+        .parking-list-item {
+            padding: 1rem;
+            border-bottom: 1px solid #10b981;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .parking-list-item:hover {
+            background-color: #aeffe4;
+        }
+        
+        .parking-list-item .item-info h6 {
+            margin: 0 0 0.25rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .parking-list-item .address {
+            color: #059669;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .item-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+        
+        .item-details .capacity {
+            color: #475569;
+        }
+        
+        .item-details .rate {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        .item-status {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-indicator.available {
+            background-color: #059669;
+        }
+        
+        .status-indicator.busy {
+            background-color: #d97706;
+        }
+        
+        .status-indicator.full {
+            background-color: #dc2626;
+        }
+        
+        .oc-search {
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .oc-actions button:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+        
+        .oc-filters input[type="checkbox"] {
+            margin: 0;
+        }
+        
+        .oc-map-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+        
+        .oc-map-loading i {
+            color: #2563eb;
+        }

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard de Ocelon - Gestiona tus estancias de estacionamiento">
+    <title>Dashboard - Ocelon</title>
+    <link rel="icon" href="/images/Logo.jpg" type="image/jpg">
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    
+    <!-- Chart.js CSS -->
+    <style>
+        .chartjs-render-monitor {
+            animation: chartFadeIn 0.8s ease;
+        }
+        
+        @keyframes chartFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive-fixes.css">
+    <link rel="stylesheet" href="css/parking-map.css">
+    
+    <!-- Toast Notifications -->
+    <link rel="stylesheet" href="css/toast-notifications.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-dashboard">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand-dashboard" href="/">
+                <i class="fas fa-parking me-2"></i>
+                OCELON
+            </a>
+            
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <!-- Notificaciones -->
+                <div class="notification-bell" id="notificationBtn">
+                    <i class="fas fa-bell text-white" style="font-size: 1.25rem;"></i>
+                    <span class="notification-badge" id="notificationCount">3</span>
+                </div>
+                
+                <!-- Perfil de usuario -->
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Usuario</div>
+                        <div class="user-role" id="userRole">Conductor</div>
+                    </div>
+                </div>
+                
+                <!-- Botón de logout -->
+                <button class="btn btn-outline-ocelon btn-sm" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt me-2"></i>
+                    <span class="d-none d-md-inline">Salir</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Layout Principal -->
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Navegación Principal -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">Navegación</div>
+                <a href="#" class="sidebar-link active" data-section="overview">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Resumen</span>
+                </a>
+                <a href="#" class="sidebar-link" data-section="map">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Mapa de Estacionamientos</span>
+                </a>
+                <a href="#" class="sidebar-link" data-section="sessions">
+                    <i class="fas fa-parking"></i>
+                    <span>Mis Estancias</span>
+                    <span class="badge badge-info" id="activeSessionsBadge">0</span>
+                </a>
+                <a href="#" class="sidebar-link" data-section="payments">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Pagos</span>
+                </a>
+                <a href="#" class="sidebar-link" data-section="analytics">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Analíticas</span>
+                </a>
+                <a href="#" class="sidebar-link" data-section="promotions">
+                    <i class="fas fa-tags"></i>
+                    <span>Promociones</span>
+                </a>
+            </div>
+            
+            <!-- Gestión -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">Gestión</div>
+                <a href="#" class="sidebar-link" data-section="profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Mi Perfil</span>
+                </a>
+                <a href="#" class="sidebar-link" data-section="support">
+                    <i class="fas fa-headset"></i>
+                    <span>Soporte</span>
+                    <span class="badge badge-warning" id="openTicketsBadge">0</span>
+                </a>
+            </div>
+            
+            <!-- Admin (solo si es admin) -->
+            <div class="sidebar-section" id="adminSection" style="display: none;">
+                <div class="sidebar-title">Administración</div>
+                <a href="admin.html" class="sidebar-link text-ocelon">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Panel Admin</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- SECCIÓN: Overview (Resumen) -->
+            <div id="overviewSection" class="dashboard-section">
+                <div class="page-header">
+                    <h1 class="page-title">Panel de Control</h1>
+                    <p class="page-subtitle">Bienvenido de nuevo, gestiona tus estancias de forma inteligente</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-parking"></i>
+                        </div>
+                        <div class="stat-label">Estancias Totales</div>
+                        <div class="stat-value" id="totalSessions">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12% vs mes anterior</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-label">Sesiones Activas</div>
+                        <div class="stat-value" id="activeSessions">0</div>
+                        <div class="stat-change">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                            <span>En tiempo real</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-label">Total Gastado</div>
+                        <div class="stat-value" id="totalSpent">$0</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>-5% vs mes anterior</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="stat-label">Pagos Realizados</div>
+                        <div class="stat-value" id="totalPayments">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-check-circle"></i>
+                            <span>100% exitosos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-section">
+                    <div class="row">
+                        <div class="col-lg-8 mb-4">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">
+                                        <i class="fas fa-chart-area text-primary me-2"></i>
+                                        Actividad de Estancias
+                                    </h3>
+                                    <div class="chart-actions">
+                                        <button class="btn-chart-action active" data-period="week">Semana</button>
+                                        <button class="btn-chart-action" data-period="month">Mes</button>
+                                        <button class="btn-chart-action" data-period="year">Año</button>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="sessionsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4 mb-4">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">
+                                        <i class="fas fa-chart-pie text-primary me-2"></i>
+                                        Distribución
+                                    </h3>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="distributionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad Reciente -->
+                <div class="data-table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-history text-primary me-2"></i>
+                            Actividad Reciente
+                        </h3>
+                    </div>
+                    <div id="recentActivity">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: MAPA DE ESTACIONAMIENTOS -->
+            <div id="mapSection" class="dashboard-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-map-marked-alt text-primary me-2"></i>
+                        Mapa de Estacionamientos
+                    </h1>
+                    <p class="page-subtitle">Encuentra el estacionamiento perfecto cerca de ti</p>
+                </div>
+
+                <div class="data-table-card">
+                    <div id="parkingMapContainer"></div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Sesiones -->
+            <div id="sessionsSection" class="dashboard-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Mis Estancias</h1>
+                    <p class="page-subtitle">Gestiona y visualiza todas tus sesiones de estacionamiento</p>
+                </div>
+
+                <div class="mb-4">
+                    <button class="btn btn-ocelon" id="newSessionBtn">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Nueva Estancia
+                    </button>
+                </div>
+
+                <div class="data-table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">Historial de Estancias</h3>
+                        <div class="table-filters">
+                            <input type="text" class="filter-input" id="searchSessions" placeholder="Buscar por QR o estacionamiento...">
+                            <select class="filter-input" id="filterStatus">
+                                <option value="">Todos los estados</option>
+                                <option value="activa">Activas</option>
+                                <option value="pagada">Pagadas</option>
+                                <option value="finalizada">Finalizadas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Código QR</th>
+                                    <th>Estacionamiento</th>
+                                    <th>Entrada</th>
+                                    <th>Salida</th>
+                                    <th>Estado</th>
+                                    <th>Monto</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sessionsTable">
+                                <!-- Se llena dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Pagos -->
+            <div id="paymentsSection" class="dashboard-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Historial de Pagos</h1>
+                    <p class="page-subtitle">Revisa todas tus transacciones y descarga comprobantes</p>
+                </div>
+
+                <div class="data-table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">Transacciones</h3>
+                        <div class="table-filters">
+                            <input type="text" class="filter-input" id="searchPayments" placeholder="Buscar por ID...">
+                            <input type="date" class="filter-input" id="filterDateFrom" placeholder="Desde">
+                            <input type="date" class="filter-input" id="filterDateTo" placeholder="Hasta">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>ID Transacción</th>
+                                    <th>Fecha</th>
+                                    <th>Método</th>
+                                    <th>Subtotal</th>
+                                    <th>IVA</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentsTable">
+                                <!-- Se llena dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Analíticas -->
+            <div id="analyticsSection" class="dashboard-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Analíticas Avanzadas</h1>
+                    <p class="page-subtitle">Descubre patrones y optimiza tu uso de estacionamientos</p>
+                </div>
+
+                <div class="charts-section">
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">Gastos por Mes</h3>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="spendingChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 mb-4">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">Estacionamientos Más Usados</h3>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="parkingUsageChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Promociones -->
+            <div id="promotionsSection" class="dashboard-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-tags text-primary me-2"></i>
+                        Promociones y Planes
+                    </h1>
+                    <p class="page-subtitle">Elige el plan que mejor se adapte a tus necesidades y obtén descuentos</p>
+                </div>
+
+                <div id="currentPlanAlert" class="alert alert-info mb-4" style="display: none;">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Plan Actual:</strong> <span id="currentPlanName">Básico</span> - 
+                    Descuento: <span id="currentPlanDiscount">0%</span>
+                </div>
+
+                <div class="row g-4 justify-content-center">
+                    <!-- Plan Básico -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="pricing-card" id="basicPlanCard">
+                            <h3 class="pricing-name">Básico</h3>
+                            <div class="pricing-price">
+                                <span class="pricing-amount">$0</span>
+                                <span class="pricing-period">/mes</span>
+                            </div>
+                            <ul class="pricing-features">
+                                <li><i class="fas fa-check-circle"></i> Acceso a estacionamientos</li>
+                                <li><i class="fas fa-check-circle"></i> Pago por uso</li>
+                                <li><i class="fas fa-check-circle"></i> Historial de 30 días</li>
+                                <li><i class="fas fa-check-circle"></i> Soporte por email</li>
+                                <li style="opacity: 0.3;"><i class="fas fa-times-circle"></i> Descuentos exclusivos</li>
+                                <li style="opacity: 0.3;"><i class="fas fa-times-circle"></i> Reserva anticipada</li>
+                            </ul>
+                            <button class="btn btn-outline-ocelon w-100" onclick="selectPlan('basico', 0)">
+                                <span id="basicButtonText">Plan Actual</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Plan Premium -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="pricing-card featured" id="premiumPlanCard">
+                            <h3 class="pricing-name">Premium</h3>
+                            <div class="pricing-price">
+                                <span class="pricing-amount">$99</span>
+                                <span class="pricing-period">/mes</span>
+                            </div>
+                            <ul class="pricing-features">
+                                <li><i class="fas fa-check-circle"></i> Todo en Básico</li>
+                                <li><i class="fas fa-check-circle text-success"></i> <strong>15% de descuento</strong></li>
+                                <li><i class="fas fa-check-circle"></i> Reserva anticipada</li>
+                                <li><i class="fas fa-check-circle"></i> Historial ilimitado</li>
+                                <li><i class="fas fa-check-circle"></i> Soporte prioritario</li>
+                                <li><i class="fas fa-check-circle"></i> Reportes avanzados</li>
+                            </ul>
+                            <button class="btn btn-ocelon w-100" onclick="selectPlan('premium', 15)">
+                                <span id="premiumButtonText">Elegir Premium</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Plan Empresarial -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="pricing-card" id="empresarialPlanCard">
+                            <h3 class="pricing-name">Empresarial</h3>
+                            <div class="pricing-price">
+                                <span class="pricing-amount">$299</span>
+                                <span class="pricing-period">/mes</span>
+                            </div>
+                            <ul class="pricing-features">
+                                <li><i class="fas fa-check-circle"></i> Todo en Premium</li>
+                                <li><i class="fas fa-check-circle text-success"></i> <strong>25% de descuento</strong></li>
+                                <li><i class="fas fa-check-circle"></i> Cuentas múltiples</li>
+                                <li><i class="fas fa-check-circle"></i> API de integración</li>
+                                <li><i class="fas fa-check-circle"></i> Gerente de cuenta</li>
+                                <li><i class="fas fa-check-circle"></i> SLA garantizado</li>
+                            </ul>
+                            <button class="btn btn-outline-ocelon w-100" onclick="selectPlan('empresarial', 25)">
+                                <span id="empresarialButtonText">Elegir Empresarial</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Perfil -->
+            <div id="profileSection" class="dashboard-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Mi Perfil</h1>
+                    <p class="page-subtitle">Actualiza tu información personal</p>
+                </div>
+
+                <div class="data-table-card">
+                    <form id="profileForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre Completo</label>
+                                <input type="text" class="form-control" id="profileNombre">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="profileEmail" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="profileTelefono">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">RFC</label>
+                                <input type="text" class="form-control" id="profileRfc">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-ocelon">
+                            <i class="fas fa-save me-2"></i>
+                            Guardar Cambios
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Soporte -->
+            <div id="supportSection" class="dashboard-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Soporte Técnico</h1>
+                    <p class="page-subtitle">Crea y gestiona tickets de ayuda</p>
+                </div>
+
+<div class="mb-4">
+    <button class="btn btn-ocelon" id="newTicketBtn" onclick="openNewTicketModal()">
+        <i class="fas fa-plus-circle me-2"></i>
+        Nuevo Ticket
+    </button>
+</div>
+
+                <div class="data-table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">Mis Tickets</h3>
+                    </div>
+                    <div id="ticketsList">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALES -->
+    <!-- Modal: Nueva Sesión -->
+    <div class="modal fade" id="newSessionModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-parking text-primary me-2"></i>
+                        Nueva Estancia
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newSessionForm">
+                        <div class="mb-3">
+                            <label class="form-label">Estacionamiento</label>
+                            <select class="form-control" id="parkingLotSelect" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Placas del Vehículo</label>
+                            <input type="text" class="form-control" id="vehiclePlates" required placeholder="ABC-123">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-ocelon" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ocelon" id="createSessionBtn">
+                        <i class="fas fa-check me-2"></i>
+                        Crear Estancia
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Procesar Pago -->
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-credit-card text-primary me-2"></i>
+                        Procesar Pago
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="paymentDetails" class="mb-4"></div>
+                    <form id="paymentForm">
+                        <div class="mb-3">
+                            <label class="form-label">Método de Pago</label>
+                            <select class="form-control" id="paymentMethod" required>
+                                <option value="">-- Selecciona un método --</option>
+                                <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                                <option value="wallet">Wallet Digital</option>
+                                <option value="transferencia">Transferencia Bancaria</option>
+                            </select>
+                        </div>
+
+                        <!-- FORMULARIO TARJETA -->
+                        <div id="tarjetaForm" class="payment-method-form" style="display: none;">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Datos de Tarjeta</strong> - Datos de práctica
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nombre del Titular</label>
+                                <input type="text" class="form-control" id="tarjetaNombre" placeholder="Juan Pérez García">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Número de Tarjeta</label>
+                                <input type="text" class="form-control" id="tarjetaNumero" placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric">
+                                <small class="text-muted">16 dígitos</small>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Fecha de Caducidad</label>
+                                    <input type="text" class="form-control" id="tarjetaFecha" placeholder="MM/YY" maxlength="5">
+                                    <small class="text-muted">Máximo 5 años desde hoy</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="tarjetaCvv" placeholder="123" maxlength="4" inputmode="numeric">
+                                    <small class="text-muted">3 o 4 dígitos</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FORMULARIO WALLET -->
+                        <div id="walletForm" class="payment-method-form" style="display: none;">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Wallet Digital</strong> - Billetera electrónica
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email o Usuario</label>
+                                <input type="email" class="form-control" id="walletEmail" placeholder="usuario@ejemplo.com">
+                                <small class="text-muted">Tu correo registrado en el wallet</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contraseña del Wallet</label>
+                                <input type="password" class="form-control" id="walletPassword" placeholder="••••••••">
+                                <small class="text-muted">Se utiliza solo para esta transacción</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de Wallet</label>
+                                <select class="form-control" id="walletTipo">
+                                    <option value="paypal">PayPal</option>
+                                    <option value="google-pay">Google Pay</option>
+                                    <option value="apple-pay">Apple Pay</option>
+                                    <option value="otros">Otros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- FORMULARIO TRANSFERENCIA -->
+                        <div id="transferenciaForm" class="payment-method-form" style="display: none;">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Transferencia Bancaria</strong> - Transferencia directa entre cuentas
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">CLABE</label>
+                                <input type="text" class="form-control" id="transferenciaClabe" placeholder="002010077512030994" maxlength="18" inputmode="numeric">
+                                <small class="text-muted">18 dígitos</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Banco</label>
+                                <select class="form-control" id="transferenciaBanco">
+                                    <option value="">-- Selecciona un banco --</option>
+                                    <option value="banamex">Banamex</option>
+                                    <option value="bbva">BBVA México</option>
+                                    <option value="santander">Santander</option>
+                                    <option value="hsbc">HSBC</option>
+                                    <option value="scotiabank">Scotiabank</option>
+                                    <option value="inbursa">Inbursa</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nombre del Beneficiario</label>
+                                <input type="text" class="form-control" id="transferenciaBeneficiario" placeholder="Juan Pérez García">
+                            </div>
+                        </div>
+
+                        <!-- OPCIÓN DE GUARDAR -->
+                        <div id="saveMethodContainer" class="form-check mb-3" style="display: none;">
+                            <input class="form-check-input" type="checkbox" id="guardarMetodo" checked>
+                            <label class="form-check-label" for="guardarMetodo">
+                                Guardar este método de pago para próximas transacciones
+                            </label>
+                            <small class="text-muted d-block mt-1">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Tus datos se guardarán de forma segura en tu navegador
+                            </small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-ocelon" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-ocelon" id="confirmPaymentBtn">
+                        <i class="fas fa-lock me-2"></i>
+                        Confirmar Pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal: Nuevo Ticket -->
+<div class="modal fade" id="newTicketModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-ticket-alt text-primary me-2"></i>
+                    Nuevo Ticket de Soporte
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newTicketForm">
+                    <div class="mb-3">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-control" id="ticketCategory" required>
+                            <option value="tecnico">Técnico</option>
+                            <option value="facturacion">Facturación</option>
+                            <option value="comercial">Comercial</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Asunto</label>
+                        <input type="text" class="form-control" id="ticketSubject" 
+                            placeholder="Ej: Problema con el pago de mi estancia" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-control" id="ticketDescription" rows="4" 
+                            placeholder="Describe tu problema con el mayor detalle posible..." required></textarea>
+                        <small class="text-muted">Mínimo 20 caracteres</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-ocelon" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-ocelon" id="createTicketBtn">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    Crear Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Leaflet MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    
+    <!-- Parking Map Script -->
+    <script src="js/parking-map.js"></script>
+    
+    <!-- Dashboard Script -->
+    <script src="js/dashboard.js"></script>
+    
+    <!-- Toast Notifications -->
+    <script src="js/toast-notifications.js"></script>
+    
+</body>
+</html>

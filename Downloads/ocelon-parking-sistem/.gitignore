@@ -1,0 +1,15 @@
+node_modules/
+data/
+.env
+*.log
+npm-debug.log*
+.DS_Store
+.vscode/
+.idea/
+package-lock.json
+
+public/images/*
+!public/images/.gitkeep
+
+public/videos/*
+!public/videos/.gitkeep
